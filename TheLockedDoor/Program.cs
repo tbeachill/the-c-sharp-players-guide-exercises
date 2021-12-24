@@ -64,6 +64,7 @@ public class Door
             Console.Write("Enter the current password: ");
             string oldPassword = Console.ReadLine();
             bool oldSuccess = int.TryParse(oldPassword, out int intOldPassword);
+
             if (oldSuccess && intOldPassword == this.password)
             {
                 while (true)
@@ -103,6 +104,7 @@ public class Door
                 Console.Write("Enter the password: ");
                 string password = Console.ReadLine();
                 bool success = int.TryParse(password, out int intPassword);
+
                 if (success && intPassword == this.password)
                 {
                     this.doorState = DoorState.Closed;
