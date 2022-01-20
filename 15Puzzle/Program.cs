@@ -4,30 +4,64 @@ currentBoard.PrintBoard();
 public class Board
 {
     public int BoardSize;
-    public int[][] CurrentBoard { get; set; }
+    public int[][] NumberBoard { get; set; }
+    public Tile[][] CurrentBoard { get; set; }
+
+    
+
     public Board(int boardSize)
     {
+        // store board size, then create int matrix, then create tile matrix
+
         this.BoardSize = boardSize;
-        this.CurrentBoard = CreateBoard(BoardSize);
+        this.NumberBoard = Math.MatCreate(boardSize, boardSize);
+        
+        this.CurrentBoard = new Tile[BoardSize][];
+
+        for (int i = 0; i < this.BoardSize; i++)
+        {
+            CurrentBoard[i] = new Tile[BoardSize];
+        }
+
+        CurrentBoard = CreateBoard(NumberBoard);
     }
 
-    private int[][] CreateBoard(int boardSize)
+    private Tile[][] CreateBoard(int[][] numberBoard)
     {
-        CurrentBoard = Math.MatCreate(boardSize, boardSize);
+        // create a tile object matrix with the number corresponding to the int matrix
+
+        for (int x = 0; x < BoardSize; x++)
+        {
+            for (int y = 0; y < BoardSize; y++)
+            {
+                CurrentBoard[x][y] = new Tile(numberBoard[x][y]);
+            }
+        }
         
         return CurrentBoard;
     }
 
     public void PrintBoard()
     {
+        // print the board to console, ensuring correct spacing between tiles and ignoring 0 (space)
+
         for (int x = 0; x < this.BoardSize; x++)
         {
             for (int y = 0; y < this.BoardSize; y++)
             {
-                if (y == 0 && x != 0)
-                    Console.WriteLine();
+                int digits = 3;
+                if (CurrentBoard[x][y].Number.ToString().Length == 2) digits = 2;
 
-                Console.Write(Convert.ToString(CurrentBoard[x][y] + " "));
+                if (CurrentBoard[x][y].Number != 0)
+                    Console.Write(Convert.ToString(CurrentBoard[x][y].Number + String.Concat(Enumerable.Repeat(" ", digits))));
+                else
+                    Console.Write(" " + String.Concat(Enumerable.Repeat(" ", digits))); // replace 0 with whitespace
+
+                if (y == 3)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine();
+                }
             }
         }
     }
@@ -81,5 +115,4 @@ public class Math
 
         return numberArray;
     }
-
 }
