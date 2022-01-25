@@ -1,7 +1,11 @@
-﻿// Replace for loops for finding 0 with a FindSpace function that returns an x and y value.
+﻿// TODO Replace for loops for finding 0 with a FindSpace function that returns an x and y value.
+// TODO Check if puzzle is solvable https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+// TODO Check number of inversions
+// TODO Write function
 
 bool gridSelected = false;
 
+// While a grid size has not been chosen, keep prompting until one has, then create a new game
 while (gridSelected == false)
 {
     Console.Write("How large do you want the grid to be? ");
@@ -24,6 +28,7 @@ while (gridSelected == false)
         Console.WriteLine("Only numbers are accepted");
     }
 
+    // Check if the user wants to play another game - Will run after the last game has finished
     while (gridSelected == true)
     {
         Console.WriteLine("Do you want to play again? (Y/N): ");
@@ -45,30 +50,32 @@ while (gridSelected == false)
 
 public class Game
 {
+    // Class for the main game logic
     public int MoveCounts { get; set; }
     public bool Won = false;
     public int BoardSize { get; set; }
 
     public Game(int boardSize)
     {
+        // Set up a new game
         this.BoardSize = boardSize;
         Board currentBoard = new Board(boardSize);
         Console.WriteLine();
         currentBoard.PrintBoard();
 
+        // Continue the game until the user has won
         while (this.Won == false)
         {
             AcceptInput(currentBoard);
         }
 
         Console.WriteLine();
-        Console.WriteLine("Congratulations! You have won!");
-        
-
+        Console.WriteLine("Congratulations! You have won!\n");
     }
 
     private void AcceptInput(Board currentBoard)
     {
+        // Accepts arrow key inputs from the user and calls the shift tile function accordingly
         var ch = Console.ReadKey(false).Key;
         switch (ch)
         {
@@ -93,6 +100,7 @@ public class Game
 
     private void CheckStatus(Board currentBoard)
     {
+        // Function to run after every tile shift to check the current status of the game
         if (CheckOrder(currentBoard.CurrentBoard))
         {
             Won = true;
@@ -184,19 +192,22 @@ public class Game
                             switch (input)
                             {
                                 case ConsoleKey.UpArrow:
-                                    // move 0 down
+                                    // Move 0 down
                                     (currentBoard[x][y], currentBoard[x + 1][y]) = (currentBoard[x + 1][y], currentBoard[x][y]);
                                     Console.Clear();
                                     return;
                                 case ConsoleKey.DownArrow:
+                                    // Move 0 up
                                     (currentBoard[x][y], currentBoard[x - 1][y]) = (currentBoard[x - 1][y], currentBoard[x][y]);
                                     Console.Clear();
                                     return;
                                 case ConsoleKey.RightArrow:
+                                    // Move 0 left
                                     (currentBoard[x][y], currentBoard[x][y - 1]) = (currentBoard[x][y - 1], currentBoard[x][y]);
                                     Console.Clear();
                                     return;
                                 case ConsoleKey.LeftArrow:
+                                    // Move 0 right
                                     (currentBoard[x][y], currentBoard[x][y + 1]) = (currentBoard[x][y + 1], currentBoard[x][y]);
                                     Console.Clear();
                                     return;
@@ -216,7 +227,6 @@ public class Game
         public void PrintBoard()
         {
             // print the board to console, ensuring correct spacing between tiles and ignoring 0 (space)
-
             for (int x = 0; x < this.BoardSize; x++)
             {
                 for (int y = 0; y < this.BoardSize; y++)
@@ -228,6 +238,7 @@ public class Game
                     else
                         Console.Write(" " + String.Concat(Enumerable.Repeat(" ", digits))); // replace 0 with whitespace
 
+                    // Print two lines at the end of each row
                     if (y == BoardSize - 1)
                     {
                         Console.WriteLine();
@@ -254,11 +265,23 @@ public class Game
             return (null, null);
         }
 
+        /*
+        public Tile IterateTile(Board currentBoard)
+        {
+            for (int x = 0; x < this.BoardSize; x++)
+            {
+                for (int y = 0; y < this.BoardSize; y++)
+                {
 
+                }
+            }
+        }
+        */
     }
 
     public class Tile
     {
+        // Represents a single tile on the board
         public int Number { get; set; }
 
         public Tile(int number)
@@ -294,6 +317,7 @@ public class Game
             return newBoard;
         }
 
+        // Create an array from 1 to {num} and randomly shuffle the array
         private static int[] ShuffleNumbers(int num)
         {
             int[] numberArray = Enumerable.Range(1, num).ToArray(); // create array of sequence
