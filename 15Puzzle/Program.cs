@@ -1,7 +1,4 @@
-﻿// TODO Replace for loops for finding 0 with a FindSpace function that returns an x and y value.
-// TODO Check if puzzle is solvable https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
-// TODO Check number of inversions
-// TODO Write function
+﻿// 15 puzzle game that runs in a console window
 
 bool gridSelected = false;
 
@@ -32,14 +29,15 @@ while (gridSelected == false)
     // Check if the user wants to play another game - Will run after the last game has finished
     while (gridSelected == true)
     {
-        Console.WriteLine("Do you want to play again? (Y/N): ");
+        Console.Write("Do you want to play again? (Y/N): ");
         if (Char.TryParse(Console.ReadLine(), out char replay))
         {
-            if (replay == 'Y')
+            if (replay == 'Y' || replay == 'y')
             {
+                Console.Clear();
                 gridSelected = false;
             }
-            else if (replay == 'N')
+            else if (replay == 'N' || replay == 'n')
             {
                 Environment.Exit(0);
             }
@@ -48,10 +46,10 @@ while (gridSelected == false)
     }
 }
 
-
 public class Game
 {
     // Class for the main game logic
+
     public int MoveCounts { get; set; }
     public bool Won = false;
     public int BoardSize { get; set; }
@@ -71,7 +69,7 @@ public class Game
         currentBoard.PrintBoard();
 
         // Continue the game until the user has won
-        while (this.Won == false)
+        while (Won == false)
         {
             AcceptInput(currentBoard);
         }
@@ -83,6 +81,7 @@ public class Game
     private void AcceptInput(Board currentBoard)
     {
         // Accepts arrow key inputs from the user and calls the shift tile function accordingly
+
         var ch = Console.ReadKey(false).Key;
         switch (ch)
         {
@@ -108,7 +107,8 @@ public class Game
     private void CheckStatus(Board currentBoard)
     {
         // Function to run after every tile shift to check the current status of the game
-        if (CheckOrder(currentBoard.CurrentBoard))
+
+        if (CheckOrder(currentBoard))
         {
             Won = true;
         }
@@ -118,55 +118,52 @@ public class Game
         }
     }
 
-    public bool CheckOrder(Tile[][] currentBoard)
+    public bool CheckOrder(Board currentBoard)
     {
-        int i = 0;
-        // Check the order of the tile numbers.
-        for (int x = 0; x < BoardSize; x++)
+        // Check if the tile numbers are in numerical order
+
+        int[] boardSequence = currentBoard.GetBoardSequence();
+
+        for (int i = 0; i < boardSequence.Length - 1; i++)
         {
-            for (int y = 0; y < BoardSize; y++)
+            if (boardSequence[i + 1] != boardSequence[i] + 1 && boardSequence[i + 1] != 0)
             {
-                if (currentBoard[x][y].Number == i + 1 || currentBoard[x][y].Number == i && i != BoardSize * BoardSize)
-                {
-                    // proceed
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
         // If the above loop doesn't return
         return true;
-
     }
 }
+
 public class Board
 {
+    // Class for the board of tiles
+
     public int BoardSize;
     public int[][] NumberBoard { get; set; }
     public Tile[][] CurrentBoard { get; set; }
 
     public Board(int boardSize)
     {
-        // store board size, then create int matrix, then create tile matrix
+        // Store board size, then create int matrix, then create tile matrix
             
         this.BoardSize = boardSize;
         this.NumberBoard = Math.MatCreate(boardSize, boardSize);
         this.CurrentBoard = new Tile[BoardSize][];
 
-        for (int i = 0; i < this.BoardSize; i++)
+        for (int i = 0; i < BoardSize; i++)
         {
             CurrentBoard[i] = new Tile[BoardSize];
         }
 
-        CurrentBoard = CreateBoard(NumberBoard);
+        this.CurrentBoard = CreateBoard(NumberBoard);
     }
 
     private Tile[][] CreateBoard(int[][] numberBoard)
     {
-        // create a tile object matrix with the number corresponding to the int matrix
+        // Create a tile object matrix with the number corresponding to the int matrix
 
         for (int x = 0; x < BoardSize; x++)
         {
@@ -181,11 +178,11 @@ public class Board
 
     public void ShiftTile(Tile[][] currentBoard, ConsoleKey input)
     {
+        // Swap the 0 with the opposite side of the arrow, unless the 0 is at the edge
 
-        // swap the 0 with the opposite side of the arrow, unless the 0 is at the edge
-        for (int x = 0; x < this.BoardSize; x++)
+        for (int x = 0; x < BoardSize; x++)
         {
-            for (int y = 0; y < this.BoardSize; y++)
+            for (int y = 0; y < BoardSize; y++)
             {
                 if (currentBoard[x][y].Number == 0)
                 {
@@ -196,31 +193,25 @@ public class Board
                             case ConsoleKey.UpArrow:
                                 // Move 0 down
                                 (currentBoard[x][y], currentBoard[x + 1][y]) = (currentBoard[x + 1][y], currentBoard[x][y]);
-                                Console.Clear();
                                 return;
                             case ConsoleKey.DownArrow:
                                 // Move 0 up
                                 (currentBoard[x][y], currentBoard[x - 1][y]) = (currentBoard[x - 1][y], currentBoard[x][y]);
-                                Console.Clear();
                                 return;
                             case ConsoleKey.RightArrow:
                                 // Move 0 left
                                 (currentBoard[x][y], currentBoard[x][y - 1]) = (currentBoard[x][y - 1], currentBoard[x][y]);
-                                Console.Clear();
                                 return;
                             case ConsoleKey.LeftArrow:
                                 // Move 0 right
                                 (currentBoard[x][y], currentBoard[x][y + 1]) = (currentBoard[x][y + 1], currentBoard[x][y]);
-                                Console.Clear();
                                 return;
                         }
                     }
-                    catch (System.IndexOutOfRangeException ex)
+                    catch (System.IndexOutOfRangeException)
                     {
-                        Console.Clear();
                         return;
                     }
-
                 }
             }
         }
@@ -228,17 +219,23 @@ public class Board
 
     public void PrintBoard()
     {
-        // print the board to console, ensuring correct spacing between tiles and ignoring 0 (space)
-        for (int x = 0; x < this.BoardSize; x++)
+        // Print the board to console, ensuring correct spacing between tiles and ignoring 0 (space)
+        Console.Clear();
+
+        for (int x = 0; x < BoardSize; x++)
         {
-            for (int y = 0; y < this.BoardSize; y++)
+            for (int y = 0; y < BoardSize; y++)
             {
                 int digits = CurrentBoard[x][y].Number.ToString().Length;
 
                 if (CurrentBoard[x][y].Number != 0)
-                    Console.Write(Convert.ToString(CurrentBoard[x][y].Number + String.Concat(Enumerable.Repeat(" ", digits + 1))));
+                {
+                    Console.Write(Convert.ToString(CurrentBoard[x][y].Number + String.Concat(Enumerable.Repeat(" ", 5 - digits))));
+                } 
                 else
-                    Console.Write(" " + String.Concat(Enumerable.Repeat(" ", digits))); // replace 0 with whitespace
+                {
+                    Console.Write(" " + String.Concat(Enumerable.Repeat(" ", 4))); // replace 0 with whitespace
+                }
 
                 // Print two lines at the end of each row
                 if (y == BoardSize - 1)
@@ -253,12 +250,15 @@ public class Board
     public int[] GetBoardSequence()
     {
         // Get a 1D array of the sequence of numbers from the board
+
+        int i = 0;
         int[] boardSequence = new int[BoardSize * BoardSize];
-        for (int x = 0; x < this.BoardSize; x++)
+        for (int x = 0; x < BoardSize; x++)
         {
-            for (int y = 0; y < this.BoardSize; y++)
+            for (int y = 0; y < BoardSize; y++)
             {
-                boardSequence.Append(CurrentBoard[x][y].Number);
+                boardSequence[i] = CurrentBoard[x][y].Number;
+                i++;
             }
         }
 
@@ -268,9 +268,10 @@ public class Board
     public (int?, int?) GetSpaceLocation()
     {
         // Get the location of the 0 (space)
-        for (int x = 0; x < this.BoardSize; x++)
+
+        for (int x = 0; x < BoardSize; x++)
         {
-            for (int y = 0; y < this.BoardSize; y++)
+            for (int y = 0; y < BoardSize; y++)
             {
                 if (CurrentBoard[x][y].Number == 0)
                 {
@@ -281,24 +282,12 @@ public class Board
 
         return (null, null);
     }
-
-    /*
-    public Tile IterateTile(Board currentBoard)
-    {
-        for (int x = 0; x < this.BoardSize; x++)
-        {
-            for (int y = 0; y < this.BoardSize; y++)
-            {
-
-            }
-        }
-    }
-    */
 }
 
 public class Tile
 {
     // Represents a single tile on the board
+
     public int Number { get; set; }
 
     public Tile(int number)
@@ -334,11 +323,11 @@ public static class Math
         return newBoard;
     }
 
-    // Create an array from 1 to {num} and randomly shuffle the array
     private static int[] ShuffleNumbers(int num)
     {
-        int[] numberArray = Enumerable.Range(1, num).ToArray(); // create array of sequence
+        // Create an array from 1 to {num} and randomly shuffle the array
 
+        int[] numberArray = Enumerable.Range(1, num).ToArray(); // create array of sequence
         Array.Resize(ref numberArray, num + 1);   // add an extra number for the space
 
         Random random = new Random();
@@ -349,14 +338,20 @@ public static class Math
         
     public static bool CheckSolvable(Board currentBoard)
     {
+        // Check that the current board is solvable
+
         // Create a 1D array from the current board
         int[] numberArray = currentBoard.GetBoardSequence();
-
         int inversions = CountInversions(numberArray);
-        // If length is odd and the number of inversions is even the puzzle is solvable
-        if (numberArray.Length % 2 != 0 && inversions % 2 == 0)
+
+        // If board width is odd and the number of inversions is even the puzzle is solvable
+        if (currentBoard.BoardSize % 2 != 0 && inversions % 2 == 0)
         {
             return true;
+        }
+        else if (currentBoard.BoardSize % 2 != 0 && inversions % 2 != 0)
+        {
+            return false;
         }
         else
         {
@@ -364,7 +359,7 @@ public static class Math
             if (x.HasValue)
             {
                 // Count how many rows from the bottom the space is
-                int? rowFromBottom = currentBoard.BoardSize - (x - 1);
+                int? rowFromBottom = currentBoard.BoardSize - x;
 
                 // Puzzle is solvable if row from bottom is even and inversions are odd, or row is odd and inversions are even
                 if (rowFromBottom % 2 == 0 && inversions % 2 != 0)
@@ -384,15 +379,16 @@ public static class Math
     private static int CountInversions(int[] numberArray)
     {
         // Count the number of inversions for a sequence of numbers
+
         int inversionCount = 0;
 
         // Go through every number in the array
-        for (int i = 1; i < numberArray.Length; i++)
+        for (int i = 0; i < numberArray.Length; i++)
         {
             // Go through every number after i in the array
             for (int j = i + 1; j < numberArray.Length; j++)
             {
-                if (numberArray[i] > numberArray[j])
+                if (numberArray[i] > numberArray[j] && numberArray[j] != 0)
                 {
                     inversionCount++;
                 }
@@ -402,7 +398,6 @@ public static class Math
         return inversionCount;
     }
 }
-
 
 static class ArrayExtensions
 {
