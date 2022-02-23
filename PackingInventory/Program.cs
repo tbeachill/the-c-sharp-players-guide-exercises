@@ -17,12 +17,16 @@ while (true)
     if (newPack.Add(a))
     {
         // If the item has been successfully added
-        Console.WriteLine($"{a} has been added. The pack now contains {newPack.CurrentCount} items with a weight of {newPack.CurrentWeight.ToString("n2")} and a volume of {newPack.CurrentVolume.ToString("n2")}.");
+        Console.WriteLine($"{a} has been added. The pack now contains {newPack.CurrentCount} items " +
+            $"with a weight of {newPack.CurrentWeight.ToString("n2")} " +
+            $"and a volume of {newPack.CurrentVolume.ToString("n2")}.");
     }
     else
     {
         // If the item could not fit in the pack
-        Console.WriteLine($"{a} can not be added. The pack has {newPack.MaxCount - newPack.CurrentCount} places left. Remaining weight of {(newPack.MaxWeight - newPack.CurrentWeight).ToString("n2")} and remaining volume of {(newPack.MaxVolume - newPack.CurrentVolume).ToString("n2")}");
+        Console.WriteLine($"{a} can not be added. The pack has {newPack.MaxCount - newPack.CurrentCount} places left. " +
+            $"Remaining weight of {(newPack.MaxWeight - newPack.CurrentWeight).ToString("n2")} " +
+            $"and remaining volume of {(newPack.MaxVolume - newPack.CurrentVolume).ToString("n2")}");
     }
 
     Console.WriteLine();
@@ -57,8 +61,8 @@ public class InventoryItem
 {
     // Base class for an item
 
-    public double Weight { get; set; }
-    public double Volume { get; set; }
+    public double Weight { get; }
+    public double Volume { get; }
 
     public InventoryItem(double weight, double volume)
     {
@@ -92,7 +96,9 @@ public class Pack
     {
         // If adding the item does not exceed the max weight, volume, or item capacity, add the item
 
-        if (CurrentWeight + item.Weight > MaxWeight || CurrentVolume + item.Volume > MaxVolume || CurrentCount + 1 > MaxCount)
+        if (CurrentWeight + item.Weight > MaxWeight || 
+            CurrentVolume + item.Volume > MaxVolume || 
+            CurrentCount + 1 > MaxCount)
         {
             return false;
         }
@@ -108,13 +114,8 @@ public class Pack
 
 // Item classes - derived from the base class InventoryItem
 public class Arrow : InventoryItem { public Arrow() : base(0.1, 0.05) { } }
-
 public class Bow : InventoryItem { public Bow() : base(1, 4) { } }
-
 public class Rope : InventoryItem { public Rope() : base(1, 1.5) { } }
-
 public class Water : InventoryItem { public Water() : base(2, 3) { } }
-
 public class Food : InventoryItem { public Food() : base(1, 0.5) { } }
-
 public class Sword : InventoryItem { public Sword() : base(5, 3) { } }
