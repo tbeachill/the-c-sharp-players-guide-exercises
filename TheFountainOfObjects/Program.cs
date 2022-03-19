@@ -3,18 +3,45 @@
 
 public class GameRunner
 {
-    Map CurrentMap = new Map();
+    Map CurrentMap;
     Player CurrentPlayer = new Player();
     bool GameComplete = false;
     string[] Directions = { "north", "east", "south", "west" };
 
     public GameRunner()
     {
+        // allow the user to select a map size
+        ConsoleKey mapSelect;
+        do
+        {
+            Console.WriteLine("Select a game size:\n1. Small\n2. Medium\n3. Large");
+            mapSelect = Console.ReadKey().Key;
+        }
+        while (mapSelect != ConsoleKey.D1 && mapSelect != ConsoleKey.D2 && mapSelect != ConsoleKey.D3);
+
+        // generate the map
+        switch (mapSelect)
+        {
+            case ConsoleKey.D1:
+                CurrentMap = new Map(4);
+                CurrentPlayer.MapBound = 4;
+                break;
+            case ConsoleKey.D2:
+                CurrentMap = new Map(6);
+                CurrentPlayer.MapBound = 6;
+                break;
+            case ConsoleKey.D3:
+                CurrentMap = new Map(8);
+                CurrentPlayer.MapBound = 8;
+                break;
+        }
+
+        // loop the game logic until the user wins
         while (GameComplete == false)
         {
             PrintLine();
             Console.WriteLine($"You are in the room at {CurrentPlayer.X}:{CurrentPlayer.Y}.");
-            Console.WriteLine(CurrentMap.rooms[CurrentPlayer.X, CurrentPlayer.Y].Description());
+            Console.WriteLine(CurrentMap.Rooms[CurrentPlayer.X, CurrentPlayer.Y].Description());
 
             // get an action from the player
             Console.Write("What do you want to do? ");
@@ -50,7 +77,7 @@ public class GameRunner
             else if (input[0] == "interact")
             {
                 // interact with the contents of the current room
-                CurrentMap.rooms[CurrentPlayer.X, CurrentPlayer.Y].Interact();
+                CurrentMap.Rooms[CurrentPlayer.X, CurrentPlayer.Y].Interact();
             }
             else
             {
@@ -58,7 +85,7 @@ public class GameRunner
             }
 
             // winning conditions
-            if (CurrentMap.rooms[CurrentMap.FountainPos[0], CurrentMap.FountainPos[1]].Contents.IsEnabled == true &&
+            if (CurrentMap.Rooms[CurrentMap.FountainPos.X, CurrentMap.FountainPos.Y].Contents.IsEnabled == true &&
                 CurrentPlayer.X == 0 && CurrentPlayer.Y == 0)
             {
                 GameComplete = true;
@@ -78,30 +105,58 @@ public class GameRunner
 
 public class Map
 {
-    public Room[,] rooms { get; } = new Room[4,4];
-    public int[] FountainPos = new int[2];
+    public Room[,] Rooms { get; }
+    public Coord FountainPos { get; }
+    public Coord[] Coords { get; } = new Coord[1];
 
-    public Map()
+    public Map (int mapSize)
     {
-        // generate a new map of rooms
+        // generate a new map of rooms with a specified size
 
-        for (int y = 0; y < 4; y++)
+        Rooms = new Room[mapSize, mapSize];
+
+        // Pick random positions for the features and ensure they don't overlap
+        Random r = new Random();
+        for (int i = 0; i < 1; i++)
         {
-            for (int x = 0; x < 4; x++)
+            int x;
+            int y;
+            bool inCoords;
+            do
+            {
+                x = r.Next(0, mapSize - 1);
+                y = r.Next(0, mapSize - 1);
+
+                inCoords = false;
+                foreach (Coord c in Coords)
+                {
+                    if (c.X == x && c.Y == y)
+                        inCoords = true;
+                }
+            }
+            while (inCoords == true);
+            Coords[i].X = x;
+            Coords[i].Y = y;
+        }
+
+        // generate the map
+        for (int y = 0; y < mapSize; y++)
+        {
+            for (int x = 0; x < mapSize; x++)
             {
                 // populate rooms with features
                 if (x == 0 && y == 0)
                 {
-                    rooms[x, y] = new Room(x, y, new Entrance());
+                    Rooms[x, y] = new Room(x, y, new Entrance());
                 }
-                else if (x == 2 && y == 0)
+                else if (x == Coords[0].X && y == Coords[0].Y)
                 {
-                    rooms[x, y] = new Room(x, y, new FountainOfObjects());
-                    (FountainPos[0], FountainPos[1]) = (x, y);
+                    Rooms[x, y] = new Room(x, y, new FountainOfObjects());
+                    FountainPos = new Coord(x, y);
                 }
                 else
                 {
-                    rooms[x, y] = new Room(x, y, new MapFeature());
+                    Rooms[x, y] = new Room(x, y, new MapFeature());
                 }
             }
         }
@@ -194,6 +249,7 @@ public class Player
 {
     public int X { get; set; } = 0;
     public int Y { get; set; } = 0;
+    public int MapBound { get; set; }
 
     public void Move(PlayerMove command)
     {
@@ -216,7 +272,7 @@ public class MoveNorth : PlayerMove
 
     public override void Move(Player player)
     {
-        if (player.Y < 3)
+        if (player.Y < player.MapBound)
         {
             player.Y += 1;
         }
@@ -234,7 +290,7 @@ public class MoveEast : PlayerMove
 
     public override void Move(Player player)
     {
-        if (player.X < 3)
+        if (player.X < player.MapBound)
         {
             player.X += 1;
         }
@@ -278,5 +334,16 @@ public class MoveWest : PlayerMove
         {
             Console.WriteLine("You cant move any further in that direction.");
         }
+    }
+}
+
+public struct Coord
+{
+    public int X = 0;
+    public int Y = 0;
+
+    public Coord(int x, int y)
+    {
+        X = x; Y = y;
     }
 }
