@@ -1,4 +1,10 @@
-﻿new GameRunner();
+﻿/*
+ * A game in which the player has to navigate a dark cavern by description of senses
+ * find the fountain of objects, activate it, then return to the cavern entrance
+ * while avoiding obstacles.
+*/
+
+new GameRunner();
 
 
 public class GameRunner
@@ -84,6 +90,14 @@ public class GameRunner
                 Console.WriteLine("I don't know how to do that");
             }
 
+            // losing conditions
+            if (CurrentMap.Rooms[CurrentPlayer.X, CurrentPlayer.Y].Contents.Name == "Pit")
+            {
+                Console.WriteLine("\nYou fall into a bottomless pit.");
+                Console.WriteLine("You are dead.");
+                System.Environment.Exit(0);
+            }
+
             // winning conditions
             if (CurrentMap.Rooms[CurrentMap.FountainPos.X, CurrentMap.FountainPos.Y].Contents.IsEnabled == true &&
                 CurrentPlayer.X == 0 && CurrentPlayer.Y == 0)
@@ -105,19 +119,21 @@ public class GameRunner
 
 public class Map
 {
+    public int MapSize { get; }
     public Room[,] Rooms { get; }
     public Coord FountainPos { get; }
-    public Coord[] Coords { get; } = new Coord[1];
+    public Coord[] Coords { get; } = new Coord[4];
 
     public Map (int mapSize)
     {
         // generate a new map of rooms with a specified size
 
         Rooms = new Room[mapSize, mapSize];
+        MapSize = mapSize;
 
         // Pick random positions for the features and ensure they don't overlap
         Random r = new Random();
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 4; i++)
         {
             int x;
             int y;
@@ -130,7 +146,8 @@ public class Map
                 inCoords = false;
                 foreach (Coord c in Coords)
                 {
-                    if (c.X == x && c.Y == y)
+                    // make sure there isn't already a feature there and isn't put near the entrance
+                    if (c.X == x && c.Y == y || (c.X == 0 && c.Y == 1) || (c.X == 1 && c.Y == 0))
                         inCoords = true;
                 }
             }
@@ -144,19 +161,34 @@ public class Map
         {
             for (int x = 0; x < mapSize; x++)
             {
-                // populate rooms with features
-                if (x == 0 && y == 0)
+                // fill the rooms with empty features
+                Rooms[x, y] = new Room(x, y, new MapFeature());
+            }
+        }
+
+        // add entrance
+        Rooms[0, 0] = new Room(0, 0, new Entrance());
+
+        // add fountain
+        Rooms[Coords[0].X, Coords[0].Y] = new Room(Coords[0].X, Coords[0].Y, new FountainOfObjects());
+        FountainPos = new Coord(Coords[0].X, Coords[0].Y);
+
+        // add pits
+        for (int i = 1; i < (MapSize / 2); i++)
+        {
+            Rooms[Coords[i].X, Coords[i].Y] = new Room(Coords[i].X, Coords[i].Y, new BottomlessPit());
+        }
+
+        // add pit descriptions to surrounding rooms if it doesn't already exist
+        for (int i = 1; i < (MapSize / 2); i++)
+        {
+            foreach (Coord c in Room.GetSurroundingRooms(Rooms[Coords[i].X, Coords[i].Y], MapSize))
+            {
+                // Make sure the desc hasn't already been appended and that the coord isn't empty
+                if (Rooms[c.X, c.Y].PitDesc == false && !(c.X == 0 && c.Y == 0))
                 {
-                    Rooms[x, y] = new Room(x, y, new Entrance());
-                }
-                else if (x == Coords[0].X && y == Coords[0].Y)
-                {
-                    Rooms[x, y] = new Room(x, y, new FountainOfObjects());
-                    FountainPos = new Coord(x, y);
-                }
-                else
-                {
-                    Rooms[x, y] = new Room(x, y, new MapFeature());
+                    Rooms[c.X, c.Y].Contents.Description += "\nYou feel a draft. There is a pit in a nearby room.";
+                    Rooms[c.X, c.Y].PitDesc = true;
                 }
             }
         }
@@ -169,6 +201,7 @@ public struct Room
     public int X { get; }
     public int Y { get; }
     public dynamic Contents { get; }
+    public bool PitDesc { get; set; } = false;
 
     public Room(int x, int y, MapFeature contents)
     {
@@ -190,6 +223,28 @@ public struct Room
         return false;
     }
 
+    public static Coord[] GetSurroundingRooms(Room room, int mapSize)
+    {
+        // get a list of rooms that surround the input room
+
+        Coord[] roomList = new Coord[8];
+
+        int k = 0;
+        for (int i = -1; i < 1; i++)
+        {
+            for (int j = -1; j < 1; j++)
+            {
+                if (room.X + i >= 0 && room.X + i < mapSize && room.Y + i >= 0 && room.Y + 1 < mapSize)
+                {
+                    roomList[k] = new Coord(room.X + i, room.Y + j);
+                }
+                k++;
+            }
+        }
+        
+        return roomList;
+    }
+
     public string Description()
     {
         // return the description of the room contents
@@ -206,6 +261,9 @@ public struct Room
 
 public class MapFeature
 {
+    // represents a feature present in a room
+
+    public string Name = "Empty";
     public string Description = "You can't see anything.";
     public bool IsEnabled = false;
     
@@ -218,6 +276,7 @@ public class MapFeature
 
 public class FountainOfObjects : MapFeature
 {
+    public new string Name = "Fountain";
     public new string Description = "The fountain of objects is here!";
     public new bool IsEnabled = false;
 
@@ -241,9 +300,16 @@ public class FountainOfObjects : MapFeature
 
 public class Entrance : MapFeature
 {
+    public new string Name = "Entrance";
     public new string Description = "You see light coming from the cavern entrance.";
 }
 
+
+public class BottomlessPit : MapFeature
+{
+    public new string Name = "Pit";
+    public new string Description = "You fall into a bottomless pit.";
+}
 
 public class Player
 {
