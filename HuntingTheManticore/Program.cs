@@ -29,7 +29,8 @@ void StartGame()
     int manticoreHealth = 10;
     int consolasHealth = 15;
     int roundNumber = 1;
-    int manticorePlacement = NumberInput("Player 1, how far away should The Manticore be stationed? ");
+    Random random = new Random();
+    int manticorePlacement = random.Next(100);
     
     Console.Clear();
 
