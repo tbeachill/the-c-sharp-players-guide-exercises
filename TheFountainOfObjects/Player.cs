@@ -6,11 +6,15 @@
 
 namespace TheFountainOfObjects
 {
-    class Program
+    public class Player
     {
-        static void Main(string[] args)
+        public int X { get; set; } = 0;
+        public int Y { get; set; } = 0;
+        public int MapBound { get; set; }
+
+        public void Move(PlayerMove command)
         {
-            new GameRunner();
+            command.Move(this);
         }
     }
 }
