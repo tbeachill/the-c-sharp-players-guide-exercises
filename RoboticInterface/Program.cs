@@ -1,12 +1,19 @@
 ﻿Robot newRobot = new Robot();
 
+bool finished = false;
 // Get three commands from the user
-for (int i = 0; i < 3; i++)
+while (finished == false)
 {
-    Console.Write($"Command {i + 1}: ");
+    Console.Write($"Enter command: ");
     string input = Console.ReadLine();
 
-    newRobot.Commands[i] = input.ToLower() switch
+    if (input == "stop")
+    {
+        finished = true;
+        break;
+    }
+
+    newRobot.Commands.Add( input.ToLower() switch
     {
         "on" => new OnCommand(),
         "off" => new OffCommand(),
@@ -14,7 +21,7 @@ for (int i = 0; i < 3; i++)
         "east" => new EastCommand(),
         "south" => new SouthCommand(),
         "west" => new WestCommand(),
-    };
+    });
 }
 
 Console.WriteLine();
@@ -25,7 +32,7 @@ public class Robot
     public int X { get; set; }
     public int Y { get; set; }
     public bool IsPowered { get; set; }
-    public IRobotCommand[] Commands { get; } = new IRobotCommand[3];
+    public List<IRobotCommand> Commands { get; } = new List<IRobotCommand>();
 
     public void Run()
     {
