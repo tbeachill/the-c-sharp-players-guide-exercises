@@ -208,21 +208,6 @@ public struct Room
         X = x; Y = y; Contents = contents;
     }
 
-    public static bool AreAdjacent(Room a, Room b)
-    {
-        // check if two given rooms are adjacent
-
-        int xDiff = a.X - b.X;
-        int yDiff = a.Y - b.Y;
-
-        if ((Math.Abs(xDiff) == 1 && yDiff == 0) || (Math.Abs(yDiff) == 1 && xDiff == 0))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
     public static Coord[] GetSurroundingRooms(Room room, int mapSize)
     {
         // get a list of rooms that surround the input room
