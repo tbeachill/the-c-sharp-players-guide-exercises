@@ -42,6 +42,9 @@ public class GameRunner
                 break;
         }
 
+        // record the current time
+        DateTime startTime = DateTime.Now;
+
         // loop the game logic until the user wins
         while (GameComplete == false)
         {
@@ -95,19 +98,21 @@ public class GameRunner
             {
                 Console.WriteLine("\nYou fall into a bottomless pit.");
                 Console.WriteLine("You are dead.");
-                System.Environment.Exit(0);
+                GameComplete = true;
             }
 
             // winning conditions
             if (CurrentMap.Rooms[CurrentMap.FountainPos.X, CurrentMap.FountainPos.Y].Contents.IsEnabled == true &&
                 CurrentPlayer.X == 0 && CurrentPlayer.Y == 0)
             {
+                PrintLine();
+                Console.WriteLine("You have won!");
                 GameComplete = true;
             }
         }
 
-        PrintLine();
-        Console.WriteLine("You have won!");
+        TimeSpan gameTime = DateTime.Now - startTime;
+        Console.WriteLine($"The game lasted {gameTime.Minutes}m{gameTime.Seconds}s.");
     }
 
     private void PrintLine()
