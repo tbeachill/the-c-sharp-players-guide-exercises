@@ -22,7 +22,7 @@ Console.WriteLine(newCoord[1]);
 // check conversion works
 Console.WriteLine();
 Console.WriteLine((BlockOffset) Direction.East);
-Console.WriteLine((BlockOffset)Direction.South);
+Console.WriteLine((BlockOffset) Direction.South);
 
 public enum Direction { North, East, South, West }
 public record BlockOffset(int RowOffset, int ColumnOffset)
@@ -33,9 +33,9 @@ public record BlockOffset(int RowOffset, int ColumnOffset)
         return d switch
         {
             Direction.North => new BlockOffset(-1, 0),
-            Direction.East => new BlockOffset(0, 1),
+            Direction.East  => new BlockOffset(0, 1),
             Direction.South => new BlockOffset(1, 0),
-            Direction.West => new BlockOffset(0, -1)
+            Direction.West  => new BlockOffset(0, -1)
         };
     }
 }
