@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheThreeLenses", "TheThreeLenses.csproj", "{6CA3D43E-9060-484C-B2C4-3DDB1F9013D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6CA3D43E-9060-484C-B2C4-3DDB1F9013D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CA3D43E-9060-484C-B2C4-3DDB1F9013D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CA3D43E-9060-484C-B2C4-3DDB1F9013D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CA3D43E-9060-484C-B2C4-3DDB1F9013D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39BC70D5-F2EB-4711-AFD6-C4ACF5C7F4CD}
+	EndGlobalSection
+EndGlobal
