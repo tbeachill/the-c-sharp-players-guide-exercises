@@ -2,10 +2,18 @@
 {
     public class ComputerPlayer : IPlayer
     {
+        // Generate a random action to perform
         public IAction ChooseAction(Battle battle, Character character)
         {
-            Thread.Sleep(500);
-            return new DoNothingAction();
+            IAction action;
+
+            Random random = new Random();
+            action = random.Next(0,0) switch
+            {
+                0 => new DoNothingAction()
+            };
+
+            return action;
         }
     }
 }
