@@ -2,8 +2,8 @@
 {
     public class Battle
     {
-        public Party Heroes { get; set; }
-        public Party Monsters { get; set; }
+        public Party Heroes { get; }
+        public Party Monsters { get; }
 
         public Battle(Party heroes, Party monsters)
         {
@@ -27,5 +27,7 @@
                 }
             }
         }
+
+        public Party GetEnemyParty(Character character) => Heroes.Members.Contains(character) ? Monsters : Heroes;
     }
 }
