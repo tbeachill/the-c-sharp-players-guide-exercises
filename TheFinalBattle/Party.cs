@@ -1,12 +1,14 @@
 ﻿namespace TheFinalBattle
 {
-    internal class Party
+    public class Party
     {
+        public IPlayer Player { get; set; }
         public List<Character> Members { get; set; } = new List<Character> { };
 
-        public Party(Character member)
+        public Party(IPlayer player, List<Character> members)
         {
-            Members.Add(member);
+            Player = player;
+            Members = members;
         }
     }
 }

@@ -1,12 +1,19 @@
 ﻿namespace TheFinalBattle
 {
-    internal class TrueProgrammer : Character
+    // The player's character
+    public class TrueProgrammer : Character
     {
         public override string Name { get; set; }
+
+        // Get name from the player
         public TrueProgrammer()
         {
-            Console.WriteLine("What is your name? ");
-            Name = Console.ReadLine();
+            do
+            {
+                Console.WriteLine("What is your name? ");
+                Name = Console.ReadLine();
+            }
+            while (Name == "");
         }
     }
 }

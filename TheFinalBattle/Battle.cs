@@ -1,6 +1,6 @@
 ﻿namespace TheFinalBattle
 {
-    internal class Battle
+    public class Battle
     {
         public Party Heroes { get; set; }
         public Party Monsters { get; set; }
@@ -22,8 +22,7 @@
                     {
                         Console.WriteLine();
                         Console.WriteLine($"It is {character.Name}'s turn.");
-                        character.Action();
-                        Thread.Sleep(1000);
+                        party.Player.ChooseAction(this, character).Run(this, character);
                     }
                 }
             }
