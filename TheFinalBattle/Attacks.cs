@@ -10,6 +10,7 @@
     public class Punch : IAttack
     {
         public string Name => "PUNCH";
+
         public int Damage() => 1;
     }
 
@@ -18,6 +19,16 @@
     {
         public string Name => "BONE CRUNCH";
         Random r = new Random();
+
         public int Damage() => r.Next(2);
+    }
+
+
+    public class Unraveling : IAttack
+    {
+        public string Name => "UNRAVELING";
+        Random r = new Random();
+
+        public int Damage() => r.Next(3);
     }
 }
