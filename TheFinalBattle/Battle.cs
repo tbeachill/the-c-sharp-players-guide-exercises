@@ -72,5 +72,6 @@
         }
 
         public Party GetEnemyParty(Character character) => Heroes.Members.Contains(character) ? Monsters : Heroes;
+        public Party GetParty(Character character) => Heroes.Members.Contains(character) ? Heroes : Monsters;
     }
 }

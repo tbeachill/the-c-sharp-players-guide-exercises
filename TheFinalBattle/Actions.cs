@@ -22,7 +22,7 @@
             Attack = attack;
             Target = target;
         }
-        
+
 
         public void Run(Battle battle, Character character)
         {
@@ -43,6 +43,26 @@
                 Target.HP -= damage;
                 Console.WriteLine($"{Target.Name} is now at {Target.HP}/{Target.MaxHP} HP.");
             }
+        }
+    }
+
+
+    public class UseItemAction : IAction
+    {
+        private readonly Item Item;
+        private readonly Character Target;
+
+        public UseItemAction(Item item, Character target)
+        {
+            Item = item;
+            Target = target;
+        }
+
+        // Use item and remove from inventory
+        public void Run(Battle battle, Character character)
+        {
+            Item.Use(Target);
+            battle.GetParty(character).Inventory.Remove(Item);
         }
     }
 }
