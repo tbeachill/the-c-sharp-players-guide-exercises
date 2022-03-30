@@ -39,7 +39,7 @@
             foreach (Character enemyChar in enemyParty)
             {
                 Console.Write(enemyParty.IndexOf(enemyChar) + 1 + ". ");
-                Console.WriteLine(enemyChar.Name);
+                Console.WriteLine($"{enemyChar.Name} ({enemyChar.HP}/{enemyChar.MaxHP})");
             }
 
             // Ask for a target until a legitimate answer is chosen

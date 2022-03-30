@@ -15,6 +15,8 @@
         // Run looped rounds until one party is defeated
         public bool Run()
         {
+            PrintBattleStatus();
+
             while (true)
             {
                 foreach (Party party in new[] { Heroes, Monsters })
@@ -38,6 +40,34 @@
                         if (Monsters.Members.Count == 0) return true;
                     }
                 }
+            }
+        }
+
+
+        // Write out the members of each party involved in the battle and their HP values
+        private void PrintBattleStatus()
+        {
+            Console.WriteLine(new string('=', 24) + " BATTLE " + new string('=', 24));
+            bool firstPass = true;
+
+            foreach (Party party in new[] { Heroes, Monsters })
+            {
+                foreach (Character character in party.Members)
+                {
+                    // Work out adjustment for monster party to be right-aligned
+                    if (party.Equals(Monsters))
+                        Console.Write(new string(' ', 56 - (character.Name.Length + character.MaxHP.ToString().Length * 2 + 4)));
+
+                    Console.WriteLine($"{character.Name} ({character.HP}/{character.MaxHP})");
+                }
+
+                // Print divider line between parties and double line after both
+                if (firstPass == true)
+                    Console.WriteLine(new string('-', 26) + " VS " + new string('-', 26));
+                else
+                    Console.WriteLine(new string('=', 56));
+
+                firstPass = false;
             }
         }
 
