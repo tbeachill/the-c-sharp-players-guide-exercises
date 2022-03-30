@@ -4,6 +4,8 @@
     public abstract class Character
     {
         public abstract string Name { get; }
+        public abstract int HP { get; set; }
+        public abstract int MaxHP { get; }
         public abstract IAttack StandardAttack { get; }
     }
 }
