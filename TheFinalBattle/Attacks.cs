@@ -6,11 +6,13 @@
         public int Damage();
     }
 
+
     public class Punch : IAttack
     {
         public string Name => "PUNCH";
         public int Damage() => 1;
     }
+
 
     public class BoneCrunch : IAttack
     {

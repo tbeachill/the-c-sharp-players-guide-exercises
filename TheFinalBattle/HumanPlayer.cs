@@ -43,7 +43,7 @@
             bool success;
             do
             {
-                Console.WriteLine("Select a target");
+                Console.Write("Select a target: ");
                 success = int.TryParse(Console.ReadLine(), out index);
             }
             while (index == null || index < 0 || index > enemyParty.Count - 1 || !success);

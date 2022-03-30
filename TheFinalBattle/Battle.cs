@@ -11,7 +11,8 @@
             Monsters = monsters;
         }
 
-        // Run the battle through to completion
+
+        // Run looped rounds until one party is defeated
         public void Run()
         {
             while (true)
@@ -23,6 +24,18 @@
                         Console.WriteLine();
                         Console.WriteLine($"It is {character.Name}'s turn.");
                         party.Player.ChooseAction(this, character).Run(this, character);
+
+                        // Win/lose conditions
+                        if (Heroes.Members.Count == 0)
+                        {
+                            Console.WriteLine("The heroes have lost. The Uncoded One has prevailed!");
+                            return;
+                        }
+                        if (Monsters.Members.Count == 0)
+                        {
+                            Console.WriteLine("The heroes have won. The Uncoded One is deafeated!");
+                            return;
+                        }
                     }
                 }
             }

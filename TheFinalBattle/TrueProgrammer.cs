@@ -13,7 +13,7 @@
         {
             do
             {
-                Console.WriteLine("What is your name? ");
+                Console.Write("What is your name? ");
                 Name = Console.ReadLine();
             }
             while (Name == "");
