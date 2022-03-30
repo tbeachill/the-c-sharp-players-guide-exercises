@@ -5,20 +5,22 @@
         // Generate a random action to perform
         public IAction ChooseAction(Battle battle, Character character)
         {
+            Random r = new Random();
             IAction action;
-
             IAttack attack = character.StandardAttack;
-            Character target = battle.GetEnemyParty(character).Members[0];
+
+            // Select a target randomly
+            int targetIndex = r.Next(battle.GetEnemyParty(character).Members.Count);
+            Character target = battle.GetEnemyParty(character).Members[targetIndex];
 
             // Select a random action to perform
             Random random = new Random();
-            action = random.Next(0,2) switch
+            action = random.Next(1) switch
             {
-                0 => new DoNothingAction(),
-                1 => new AttackAction(attack, target)
+                0 => new AttackAction(attack, target),
+                //1 => new DoNothingAction()
             };
 
-            Thread.Sleep(500);
             return action;
         }
     }

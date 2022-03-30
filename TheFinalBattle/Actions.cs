@@ -29,7 +29,7 @@
             // Get damage to deal from attack
             int damage = Attack.Damage();
 
-            Console.WriteLine($"{character.Name} used {Attack.Name} on {Target.Name}.");
+            Console.WriteLine($"\n{character.Name} used {Attack.Name} on {Target.Name}.");
             Console.WriteLine($"{Attack.Name} dealt {damage} damage.");
 
             // If at 0 HP or below from attack, remove target from their party

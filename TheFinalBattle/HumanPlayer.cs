@@ -13,12 +13,14 @@
             // Loop until a valid action is selected
             do
             {
-                Console.WriteLine("What action?");
-                
+                Console.WriteLine($"\n1. Standard Attack ({character.StandardAttack.Name})");
+                Console.WriteLine($"2. Do Nothing");
+                Console.Write("What action? ");
+
                 action = Console.ReadLine() switch
                 {
-                    "Nothing" => new DoNothingAction(),
-                    "Attack" => new AttackAction(attack, SelectTarget(enemyParty)),
+                    "1" => new AttackAction(attack, SelectTarget(enemyParty)),
+                    "2" => new DoNothingAction(),
                     _ => null
                 };
             }
@@ -31,10 +33,12 @@
         // Allows the player to select a target to attack
         private Character SelectTarget(List<Character> enemyParty)
         {
+            Console.WriteLine();
+
             // Print a list of enemy characters
             foreach (Character enemyChar in enemyParty)
             {
-                Console.Write(enemyParty.IndexOf(enemyChar) + ". ");
+                Console.Write(enemyParty.IndexOf(enemyChar) + 1 + ". ");
                 Console.WriteLine(enemyChar.Name);
             }
 
@@ -46,9 +50,9 @@
                 Console.Write("Select a target: ");
                 success = int.TryParse(Console.ReadLine(), out index);
             }
-            while (index == null || index < 0 || index > enemyParty.Count - 1 || !success);
+            while (index == null || index < 1 || index > enemyParty.Count || !success);
 
-            return enemyParty[index];
+            return enemyParty[index - 1];
         }
     }
 }
