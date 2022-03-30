@@ -13,7 +13,7 @@
 
 
         // Run looped rounds until one party is defeated
-        public void Run()
+        public bool Run()
         {
             while (true)
             {
@@ -26,16 +26,8 @@
                         party.Player.ChooseAction(this, character).Run(this, character);
 
                         // Win/lose conditions
-                        if (Heroes.Members.Count == 0)
-                        {
-                            Console.WriteLine("The heroes have lost. The Uncoded One has prevailed!");
-                            return;
-                        }
-                        if (Monsters.Members.Count == 0)
-                        {
-                            Console.WriteLine("The heroes have won. The Uncoded One is deafeated!");
-                            return;
-                        }
+                        if (Heroes.Members.Count == 0) return false;
+                        if (Monsters.Members.Count == 0) return true;
                     }
                 }
             }
