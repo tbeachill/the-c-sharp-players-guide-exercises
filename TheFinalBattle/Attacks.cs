@@ -31,4 +31,20 @@
 
         public int Damage() => r.Next(3);
     }
+
+
+    public class Slash : IAttack
+    {
+        public string Name => "SLASH";
+
+        public int Damage() => 2;
+    }
+
+
+    public class Stab : IAttack
+    {
+        public string Name => "STAB";
+
+        public int Damage() => 1;
+    }
 }

@@ -49,20 +49,28 @@
 
     public class UseItemAction : IAction
     {
-        private readonly Item Item;
-        private readonly Character Target;
+        private Item? UseItem;
+        private Character Target;
 
-        public UseItemAction(Item item, Character target)
+
+        public UseItemAction(Character target)
         {
-            Item = item;
+            Target = target;
+        }
+
+
+        public UseItemAction(Character target, Item item)
+        {
+            UseItem = item;
             Target = target;
         }
 
         // Use item and remove from inventory
         public void Run(Battle battle, Character character)
         {
-            Item.Use(Target);
-            battle.GetParty(character).Inventory.Remove(Item);
+            if (UseItem == null) UseItem = HumanPlayer.SelectItem(battle.GetParty(character).Inventory);
+            UseItem.Use(Target);
+            battle.GetParty(character).Inventory.Remove(UseItem);
         }
     }
 }

@@ -5,31 +5,26 @@
         // Let the player choose an action to take
         public IAction ChooseAction(Battle battle, Character character)
         {
-            IAction? action;
-
-            IAttack attack = character.StandardAttack;
-            List<Character> enemyParty = battle.GetEnemyParty(character).Members;
+            Party enemyParty = battle.GetEnemyParty(character);
             Party selfParty = battle.GetParty(character);
+            List<MenuChoice> menuChoices = CreateMenu(character, enemyParty, selfParty);
 
-            // Loop until a valid action is selected
+            // Write out all menu choices
+            foreach (MenuChoice choice in menuChoices)
+            {
+                Console.Write(menuChoices.IndexOf(choice) + 1 + ". ");
+                Console.WriteLine(choice.Description);
+            }
+
+            // Loop until a valid choice is selected
+            int i;
             do
             {
-                Console.WriteLine($"\n1. Standard Attack ({character.StandardAttack.Name})");
-                Console.WriteLine($"2. Use Item");
-                Console.WriteLine($"3. Do Nothing");
                 Console.Write("What action? ");
-
-                action = Console.ReadLine() switch
-                {
-                    "1" => new AttackAction(attack, SelectTarget(enemyParty)),
-                    "2" => selfParty.Inventory.Count > 0? new UseItemAction(SelectItem(selfParty.Inventory), SelectTarget(selfParty.Members)) : null,
-                    "3" => new DoNothingAction(),
-                    _ => null
-                };
             }
-            while (action == null);
+            while (!int.TryParse(Console.ReadLine(), out i) || i < 1 || i > menuChoices.Count());
 
-            return action;
+            return menuChoices[i - 1].Action;
         }
 
 
@@ -56,22 +51,23 @@
                 Console.Write("Select a target: ");
                 success = int.TryParse(Console.ReadLine(), out index);
             }
-            while (index == null || index < 1 || index > enemyParty.Count || !success);
+            while (index < 1 || index > enemyParty.Count || !success);
 
             return enemyParty[index - 1];
         }
 
 
-        private Item SelectItem(List<Item> inventory)
+        // Allows the user to select an inventory item from a list
+        public static Item SelectItem(List<Item> inventory)
         {
             Console.WriteLine();
 
             // Print out unique items in inventory
             int i = 1;
-            foreach (String item in inventory.Select(x => x.Name).Distinct())
+            foreach (string item in inventory.Select(_ => _.Name).Distinct())
             {
                 Console.Write(i + ". ");
-                Console.WriteLine($"{item} ({inventory.Select(x => x.Name).Count()})");
+                Console.WriteLine($"{item} ({inventory.Where(_ => _.Name == item).Count()})");
                 i++;
             }
 
@@ -83,9 +79,29 @@
                 Console.Write("Select an item: ");
                 success = int.TryParse(Console.ReadLine(),out index);
             }
-            while (index == null || index < 1 || index > i - 1 || !success);
+            while (index < 1 || index > i - 1 || !success);
 
-            return inventory.Distinct().ToList()[index - 1];
+            return Enumerable.DistinctBy(inventory, _ => _.Name).ToList()[index - 1];
+        }
+
+
+        private List<MenuChoice> CreateMenu(Character character, Party enemy, Party friend)
+        {
+            List<MenuChoice> optionList = new List<MenuChoice>();
+
+            optionList.Add(new MenuChoice($"Standard Attack ({character.StandardAttack.Name})", new AttackAction(character.StandardAttack, SelectTarget(enemy.Members))));
+
+            if (character.Weapon != null)
+                optionList.Add(new MenuChoice($"Weapon Attack ({character.Weapon.SpecialAttack.Name})", new AttackAction(character.Weapon.SpecialAttack, SelectTarget(enemy.Members))));
+
+            if (friend.Inventory.Count() > 0)
+                optionList.Add(new MenuChoice("Inventory", new UseItemAction(character)));
+
+            optionList.Add(new MenuChoice("Do Nothing", new DoNothingAction()));
+
+            return optionList;
         }
     }
+
+    public record MenuChoice(string Description, IAction Action);
 }
