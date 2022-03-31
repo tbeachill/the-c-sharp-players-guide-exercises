@@ -11,14 +11,28 @@
         // Get name from the player
         public TrueProgrammer()
         {
+            Name = GetName();
+        }
+
+
+        public TrueProgrammer(Weapon weapon)
+        {
+            Weapon = weapon;
+            Name = GetName();
+        }
+
+
+        private string GetName()
+        {
+            string name;
             do
             {
                 Console.Write("What is your name? ");
-                Name = Console.ReadLine();
+                name = Console.ReadLine();
             }
-            while (Name == "");
-        }
+            while (name == "");
 
-        public TrueProgrammer(Weapon weapon) => Weapon = weapon;
+            return name;
+        }
     }
 }
