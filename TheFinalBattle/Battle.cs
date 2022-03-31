@@ -25,6 +25,7 @@
                     {
                         Thread.Sleep(500);
 
+                        
                         // Make the player characters text blue and the enemy's red
                         Console.ForegroundColor = party.Player.GetType() == typeof(HumanPlayer) ? ConsoleColor.Blue: ConsoleColor.Red;
                         Console.WriteLine();
@@ -37,7 +38,24 @@
 
                         // Win/lose conditions
                         if (Heroes.Members.Count == 0) return false;
-                        if (Monsters.Members.Count == 0) return true;
+                        if (Monsters.Members.Count == 0)
+                        {
+                            // Display which items were dropped
+                            string dropString = "";
+                            foreach (Item item in Enumerable.DistinctBy(Monsters.Inventory, x => x.Name))
+                            {
+                                dropString += item.Name + " (" + Monsters.Inventory.Where(x => x.Name == item.Name).Count() + ")  ";
+                            }
+                            Console.WriteLine($"The enemy party drops {dropString}");
+
+
+                            foreach (Item item in Monsters.Inventory)
+                            {
+                                Heroes.Inventory.Add(item);
+                            }
+
+                            return true;
+                        }
                     }
                 }
             }

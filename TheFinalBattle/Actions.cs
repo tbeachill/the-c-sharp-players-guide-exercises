@@ -44,6 +44,14 @@
             if (Target.HP - damage <= 0)
             {
                 Console.WriteLine($"{Target.Name} has been defeated.");
+
+                // Pick up the enemy's equipped weapon
+                if (Target.Weapon != null)
+                {
+                    battle.GetParty(character).Inventory.Add(Target.Weapon);
+                    Console.WriteLine($"{Target.Name} dropped {Target.Weapon.Name}");
+                }
+
                 battle.GetEnemyParty(character).Members.Remove(Target);
             }
             else
