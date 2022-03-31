@@ -29,7 +29,7 @@
 
 
         // Allows the player to select a target to attack
-        private Character SelectTarget(List<Character> enemyParty)
+        public static Character SelectTarget(List<Character> enemyParty)
         {
             // return if there is only 1 char in the party
             if (enemyParty.Count == 1) return enemyParty[0];
@@ -89,10 +89,10 @@
         {
             List<MenuChoice> optionList = new List<MenuChoice>();
 
-            optionList.Add(new MenuChoice($"Standard Attack ({character.StandardAttack.Name})", new AttackAction(character.StandardAttack, SelectTarget(enemy.Members))));
+            optionList.Add(new MenuChoice($"Standard Attack ({character.StandardAttack.Name})", new AttackAction(character.StandardAttack)));
 
             if (character.Weapon != null)
-                optionList.Add(new MenuChoice($"Weapon Attack ({character.Weapon.SpecialAttack.Name})", new AttackAction(character.Weapon.SpecialAttack, SelectTarget(enemy.Members))));
+                optionList.Add(new MenuChoice($"Weapon Attack ({character.Weapon.SpecialAttack.Name})", new AttackAction(character.Weapon.SpecialAttack)));
 
             if (friend.Inventory.Count() > 0)
                 optionList.Add(new MenuChoice("Inventory", new UseItemAction(character)));

@@ -14,8 +14,8 @@
 
     public class AttackAction : IAction
     {
-        private readonly IAttack Attack;
-        private readonly Character Target;
+        private IAttack Attack;
+        private Character? Target;
 
         public AttackAction(IAttack attack, Character target)
         {
@@ -24,8 +24,16 @@
         }
 
 
+        public AttackAction(IAttack attack)
+        {
+            Attack = attack;
+        }
+
+        // Perform the attack and display to console
         public void Run(Battle battle, Character character)
         {
+            if (Target == null) Target = HumanPlayer.SelectTarget(battle.GetEnemyParty(character).Members);
+
             // Get damage to deal from attack
             int damage = Attack.Damage();
 
@@ -69,6 +77,7 @@
         public void Run(Battle battle, Character character)
         {
             if (UseItem == null) UseItem = HumanPlayer.SelectItem(battle.GetParty(character).Inventory);
+
             UseItem.Use(Target);
             battle.GetParty(character).Inventory.Remove(UseItem);
         }
