@@ -64,10 +64,10 @@
 
             // Print out unique items in inventory
             int i = 1;
-            foreach (string item in inventory.Select(_ => _.Name).Distinct())
+            foreach (string item in inventory.Select(x => x.Name).Distinct())
             {
                 Console.Write(i + ". ");
-                Console.WriteLine($"{item} ({inventory.Where(_ => _.Name == item).Count()})");
+                Console.WriteLine($"{item} ({inventory.Where(x => x.Name == item).Count()})");
                 i++;
             }
 
@@ -81,7 +81,7 @@
             }
             while (index < 1 || index > i - 1 || !success);
 
-            return Enumerable.DistinctBy(inventory, _ => _.Name).ToList()[index - 1];
+            return Enumerable.DistinctBy(inventory, x => x.Name).ToList()[index - 1];
         }
 
 

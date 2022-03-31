@@ -6,5 +6,9 @@
         public override int HP { get; set; } = 5;
         public override int MaxHP { get; } = 5;
         public override IAttack StandardAttack { get; } =  new BoneCrunch();
+
+
+        public Skeleton(Weapon weapon) => Weapon = weapon;
+        public Skeleton() => Weapon = null;
     }
 }

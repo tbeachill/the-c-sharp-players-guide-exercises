@@ -15,10 +15,10 @@
             Character target = battle.GetEnemyParty(character).Members[targetIndex];
 
             // If character is <50% HP and there is a health potion in inventory, 25% chance of using
-            if (character.HP < character.MaxHP / 2 && inventory.Any(_ => _.Name == "HEALTH POTION"))
+            if (character.HP < character.MaxHP / 2 && inventory.Any(x => x.Name == "HEALTH POTION"))
             {
                 if (r.NextDouble() <= 0.25)
-                    return new UseItemAction(character, inventory[inventory.FindIndex(_ => _.Name == "HEALTH POTION")]);
+                    return new UseItemAction(character, inventory[inventory.FindIndex(x => x.Name == "HEALTH POTION")]);
             }
 
             // If a weapon is in inventory and a character does not have one equipped, 50% chance to equip

@@ -18,5 +18,7 @@
             }
             while (Name == "");
         }
+
+        public TrueProgrammer(Weapon weapon) => Weapon = weapon;
     }
 }

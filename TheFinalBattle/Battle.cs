@@ -26,7 +26,7 @@
                         Thread.Sleep(500);
 
                         // Make the player characters text blue and the enemy's red
-                        Console.ForegroundColor = party.Player.ToString() == "TheFinalBattle.HumanPlayer" ? ConsoleColor.Blue: ConsoleColor.Red;
+                        Console.ForegroundColor = party.Player.GetType() == typeof(HumanPlayer) ? ConsoleColor.Blue: ConsoleColor.Red;
                         Console.WriteLine();
                         Console.WriteLine($"It is {character.Name}'s turn.");
                         party.Player.ChooseAction(this, character).Run(this, character);

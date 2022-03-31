@@ -22,7 +22,7 @@
 
     public class Dagger : Weapon
     {
-        public override string Name { get; } = "SWORD";
+        public override string Name { get; } = "DAGGER";
         public override IAttack SpecialAttack { get; } = new Stab();
     }
 }
